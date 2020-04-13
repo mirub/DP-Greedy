@@ -1,0 +1,133 @@
+Student: Banu Miruna-Elena
+Group: 321CA
+
+Problem 1:
+
+    The current problem requires computing the number of ways certain bills can
+be arranged by 2 different sets of rules:
+
+- For the first set of rules, it can easily be proven that there is a mathema-
+tical formula that solves the problem: 5 * 2 ^ (n - 1);
+
+For this approach, the power has been returned a function implemented with
+a time complexity of O(log(exponent)).
+
+Proof of the above-mentioned formula:
+    Each of the bills can be followed by exactly 2 types of bills. Thus, upon
+adding more bills, the final result will be the number of leaves per tree,
+2 ^ (n - 1), n being the number of bills (levels). Since there are 5 types of
+bills, there will be 5 trees, hence the result 5 * 2 ^ (n - 1).
+
+- For the second set of rules, the only possibility of solving the problem is
+by using dynamic programming:
+
+Steps of finding the solution:
+1. Finding the type: Counting problem
+2. General form of the recurence:
+    dp[bill_type][num_of_bills % 2] = sum of
+            dp[bills_it_can_succeed][(num_of_bills + 1) % 2]
+3. Finding the recurence formula:
+    - initial case: there is only 1 way of arranging 1 bill => dp[bill][1] = 1;
+    - general case: dp[bill_type][num_of_bills % 2] = sum of
+            dp[bills_it_can_succeed][(num_of_bills + 1) % 2]
+4. Solution = sum of the ways each bill can be arranged the n-th.
+
+Time complexity: O(N); - set 1: O(log(exponent)) for the pow function
+                       - set 2: one iteration for every possible number of
+                       bills in O(N);
+                       => T(N) = O(N), where N is the number of added bills
+Space complexity: O(1); - a vector<vector<<int>> of size 6 x 2, N and set;
+                       => S(N) = O(1)
+
+
+Problem 2:
+
+    This problem requires finding the number of redundant fence pieces out of a
+given pile, knowing the start and the end of a piece. 
+    It can easily be observed that a Greedy approach is the best option for
+solving the current problem. The idea is to sort the pieces ascending by the
+start position and then, this way, the furthest end of a piece can be kept in
+a variable to compare every other end to it.
+    In case there is a further end of a piece, update the max end, else
+increment the number of redundant pieces.
+    In the end, return the final number of redundant pieces.
+
+Time complexity: O(N * logN); - std::sort in O(N*logN) time
+                              - one vector iteration in O(N)
+                              => T(N) = O(N * logN), where N is the number of
+                              fence pieces
+Space complexity: O(N); - one vector<pair<int, int>> in O(N) space, N, size;
+                        => S(N) = O(N), N = number of fence pieces
+
+
+Problem 3:
+
+    The current problem requires finding the number of ways N children can be
+given M candies, each of the kids having their own interval of possibilites.
+    This problem is also solved by using the dynamic programming technique
+following the Knapsack typology.
+
+Steps of finding the solution:
+1. Finding the type: Knapsack
+2. General form of the recurence:
+    dp[current_child][current_number_candies] =
+        dp[current_child][current_number_candies] + the number of ways the
+        previous child had received current_number_candies -
+        current_interval_possibility
+3. Finding the recurence formula:
+    - initial case: there is only 1 way for the first child to receive the
+                    number of candies in the interval as long as it is not
+                    larger than the number of available candies
+    - general case: dp[current_child][current_number_candies] =
+        dp[current_child][current_number_candies] +
+        dp[prev_child][current_number_candies - current_interval_possibility];
+        as long as current_interval_possibility <= current_number_candies;
+4. Solution = the number of ways the last child can receive m candies,
+              dp[n][m]
+
+Time complexity: O(N * M * max_interval_length);
+                 - iterating interval_length times through every possible
+                 candy distribution for every child in
+                    O(N * M * max_interval_length) time;
+                 => T(N) = O(N * M * max_interval_length);
+                 where N = number of children, M = number of candies
+                           max_interval_length = the maxium length of the
+                           intervals
+Space complexity: O(N * M); - one vector of n children possible intervals O(N);
+                            - one matrix of N x M size in O(N * M);
+                            => S(N) = O(N * M), where M, N are the above-men-
+                            tioned values
+
+
+Problem 4:
+
+    This problem requires finding the maximum increasing value for the muscles
+using only m dumbbells.
+    The idea of this problem is to maximize both the weight and the number of
+repetitions in order to find the optimal solution. Since there is not a
+way to do this simultaneously, the idea is to sort descending by the weight.
+The next step is to iterate through the dumbbells vector and determine the
+best solution at each step.
+    To do so, we have to account the following:
+- if the number of dumbbells used is less than the maximum, the optimal
+solution is determined by simply multiplying the current weight and the
+current number of repetitions, then adding the number of reps to a min heap
+so that the minimum number of reps is accesible in O(1);
+- if the number of dumbbells is equal or greater than the maximum, every
+following dumbbell is added to the reps heap replacing the minimum value
+one to check if there is any possibility of improving the already-found
+solution;
+    In the end, the solution is that kept in the variable current_solution.
+
+Time complexity: O(N * log N); - std::sort in O(N * log N);
+                               - one iteration through M elements with
+                               addition to the heap in O(M * log M);
+                               - one iteration through N - M elements
+                               with addition to the heap in
+                               O((N - M) * log(M));
+                               => T(N) = O(N * log N);
+                               where N = number of dumbbells
+                                     M = max used dumbbells
+Space complexity: O(N); - one vector of dumbbells O(N);
+                        - one heap of reps O(M);
+                        => S(N) = O(N);
